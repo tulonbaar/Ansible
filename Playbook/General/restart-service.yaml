@@ -1,0 +1,11 @@
+---
+- name: Restart Zabbix Agent 2 on Windows hosts
+  hosts: win  # This should match the group name of your Windows hosts in the inventory file
+  gather_facts: no
+  tasks:
+    - name: Restart Zabbix Agent 2 service
+      ansible.windows.win_service:
+        name: "Zabbix Agent 2"  # Ensure this service name matches exactly what's used in Windows
+        state: restarted
+      become: yes
+      when: inventory_hostname == ''

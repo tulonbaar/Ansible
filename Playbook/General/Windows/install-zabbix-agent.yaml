@@ -1,0 +1,18 @@
+---
+- name: Install Zabbix Agent on Windows machines
+  hosts: win
+  gather_facts: no
+  tasks:
+    - name: Ensure Chocolatey is installed
+      win_shell: |
+        Set-ExecutionPolicy Bypass -Scope Process -Force;
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+        iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+      args:
+        executable: powershell
+      ignore_errors: yes
+
+    - name: Install Zabbix Agent using Chocolatey
+      win_chocolatey:
+        name: zabbix-agent
+        state: present

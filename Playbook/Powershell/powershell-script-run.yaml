@@ -1,0 +1,7 @@
+---
+- name: Execute a PowerShell Script File on Windows Hosts
+  hosts: windows_servers
+  gather_facts: no
+  tasks:
+    - name: Run a PowerShell script file
+      ansible.windows.win_shell: C:\path\to\your\script.ps1

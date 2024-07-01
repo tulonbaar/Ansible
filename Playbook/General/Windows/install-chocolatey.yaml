@@ -1,0 +1,26 @@
+- name: Install Chocolatey on Windows hosts
+  hosts: win
+  gather_facts: no
+  tasks:
+    - name: Check if Chocolatey is installed
+      win_shell: choco -v
+      register: choco_installed
+      ignore_errors: yes
+      
+    - name: Ensure C:\temp directory exists
+      win_file:
+        path: C:\temp
+        state: directory
+
+    - name: Download Chocolatey installation script
+      win_get_url:
+        url: https://chocolatey.org/install.ps1
+        dest: C:\temp\chocolatey_install.ps1
+      when: choco_installed is failed
+
+    - name: Install Chocolatey using PowerShell
+      win_shell: |
+        Set-ExecutionPolicy Bypass -Scope Process -Force;
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+        iex ((New-Object System.Net.WebClient).DownloadString('C:\temp\chocolatey_install.ps1'))
+      when: choco_installed is failed
